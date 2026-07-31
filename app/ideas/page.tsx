@@ -1,7 +1,11 @@
+'use client';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { SiteHeader } from '@/components/site-header';
 import Link from 'next/link';
+import { useTranslation } from '@/lib/use-translation';
 
 // 模拟数据（后续会从API获取）
 const mockIdeas = [
@@ -60,28 +64,40 @@ const categoryColors: Record<string, string> = {
   other: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
 };
 
-const statusLabels: Record<string, { label: string; color: string }> = {
-  evaluating: { label: '评估中', color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' },
-  approved: { label: '已通过', color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' },
-  developing: { label: '开发中', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' },
-  completed: { label: '已完成', color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300' }
+const categoryLabels: Record<string, string> = {
+  cv: 'CV',
+  nlp: 'NLP',
+  data: 'Data',
+  robotics: 'Robotics',
+  other: 'Other'
 };
 
 export default function IdeasPage() {
+  const { t } = useTranslation();
+
+  const statusLabels: Record<string, { label: string; color: string }> = {
+    evaluating: { label: t('statusEvaluating'), color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' },
+    approved: { label: t('statusApproved'), color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300' },
+    developing: { label: t('statusDeveloping'), color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' },
+    completed: { label: t('statusCompleted'), color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300' }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      {/* Header */}
-      <div className="border-b bg-white/50 dark:bg-black/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="container mx-auto px-4 py-4">
+      <SiteHeader />
+
+      {/* Page Header */}
+      <div className="border-b bg-white/50 dark:bg-black/50 backdrop-blur-sm">
+        <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold">需求列表</h1>
+              <h1 className="text-3xl font-bold mb-2">{t('ideasTitle')}</h1>
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                发现和参与AI创新项目
+                {t('ideasSubtitle')}
               </p>
             </div>
             <Link href="/ideas/new">
-              <Button>发布想法</Button>
+              <Button>{t('publishIdea')}</Button>
             </Link>
           </div>
         </div>
@@ -90,12 +106,12 @@ export default function IdeasPage() {
       {/* Filters */}
       <div className="container mx-auto px-4 py-6">
         <div className="flex flex-wrap gap-2 mb-6">
-          <Button variant="outline" size="sm">全部</Button>
-          <Button variant="ghost" size="sm">计算机视觉</Button>
-          <Button variant="ghost" size="sm">NLP</Button>
-          <Button variant="ghost" size="sm">数据分析</Button>
-          <Button variant="ghost" size="sm">机器人</Button>
-          <Button variant="ghost" size="sm">其他</Button>
+          <Button variant="outline" size="sm">{t('ideasFilterAll')}</Button>
+          <Button variant="ghost" size="sm">{t('ideasFilterCV')}</Button>
+          <Button variant="ghost" size="sm">{t('ideasFilterNLP')}</Button>
+          <Button variant="ghost" size="sm">{t('ideasFilterData')}</Button>
+          <Button variant="ghost" size="sm">{t('ideasFilterRobotics')}</Button>
+          <Button variant="ghost" size="sm">{t('ideasFilterOther')}</Button>
         </div>
 
         {/* Ideas Grid */}
@@ -116,7 +132,7 @@ export default function IdeasPage() {
                       <span className="text-sm text-slate-600">{idea.author.name}</span>
                     </div>
                     <Badge className={categoryColors[idea.category]}>
-                      {idea.category.toUpperCase()}
+                      {categoryLabels[idea.category] || idea.category.toUpperCase()}
                     </Badge>
                   </div>
                   <CardTitle className="text-lg line-clamp-2">{idea.title}</CardTitle>
@@ -140,7 +156,7 @@ export default function IdeasPage() {
                         ⭐ {idea.evaluation_score?.toFixed(1) || '-'}/5
                       </span>
                       <span className="text-slate-500">
-                        {idea.evaluation_count || 0} 评估
+                        {idea.evaluation_count || 0} {t('evaluation').toLowerCase()}
                       </span>
                     </div>
                     <Badge className={statusLabels[idea.status]?.color}>
@@ -149,7 +165,7 @@ export default function IdeasPage() {
                   </div>
 
                   <div className="mt-3 pt-3 border-t text-xs text-slate-500">
-                    发布于 {idea.created_at}
+                    {t('publishedOn')} {idea.created_at}
                   </div>
                 </CardContent>
               </Card>
@@ -157,14 +173,14 @@ export default function IdeasPage() {
           ))}
         </div>
 
-        {/* Empty State (暂时隐藏) */}
+        {/* Empty State */}
         {mockIdeas.length === 0 && (
           <div className="text-center py-16">
             <div className="text-6xl mb-4">💡</div>
-            <h3 className="text-xl font-semibold mb-2">还没有需求</h3>
-            <p className="text-slate-600 mb-6">成为第一个发布想法的人吧！</p>
+            <h3 className="text-xl font-semibold mb-2">{t('noIdeas')}</h3>
+            <p className="text-slate-600 mb-6">{t('noIdeasDesc')}</p>
             <Link href="/ideas/new">
-              <Button>发布想法</Button>
+              <Button>{t('publishIdea')}</Button>
             </Link>
           </div>
         )}

@@ -41,12 +41,20 @@ export const translations = {
 
     // Ideas List
     ideasTitle: '需求列表',
+    ideasSubtitle: '发现和参与AI创新项目',
     ideasFilterAll: '全部',
     ideasFilterCV: '计算机视觉',
     ideasFilterNLP: '自然语言处理',
     ideasFilterData: '数据分析',
     ideasFilterRobotics: '机器人',
     ideasFilterOther: '其他',
+    statusEvaluating: '评估中',
+    statusApproved: '已通过',
+    statusDeveloping: '开发中',
+    statusCompleted: '已完成',
+    publishedOn: '发布于',
+    noIdeas: '还没有需求',
+    noIdeasDesc: '成为第一个发布想法的人吧！',
 
     // Idea Detail
     ideaDetail: '需求详情',
@@ -57,6 +65,10 @@ export const translations = {
     tabDiscussion: '讨论区',
     tabProject: '项目进展',
     participateDev: '参与开发',
+    detailedDescription: '详细描述',
+    projectNotStarted: '项目尚未启动',
+    projectNotStartedDesc: '这个需求还在评估阶段。一旦通过评估，就可以开始组建团队并启动开发。',
+    startDevDisabled: '开始开发（需要评估通过）',
 
     // Evaluation
     overallScore: '综合评分',
@@ -99,20 +111,31 @@ export const translations = {
     // New Idea
     newIdeaTitle: '发布新需求',
     newIdeaDesc: '分享你的想法，让社区一起评估和完善',
-    titlePlaceholder: '简短描述你的想法',
+    shareYourIdea: '分享你的想法',
+    titlePlaceholder: '简明扼要地描述你的想法',
     title: '标题',
     category: '分类',
     categoryCV: '计算机视觉',
     categoryNLP: '自然语言处理',
     categoryData: '数据分析',
-    categoryRobotics: '机器人技术',
+    categoryRobotics: '机器人',
     categoryOther: '其他',
+    selectCategory: '选择分类',
     description: '详细描述',
     descriptionPlaceholder: '详细描述你的想法、目标用户、市场机会等...',
+    descriptionHint: '请描述：1) 解决什么问题 2) 目标用户 3) 技术方案 4) 市场规模',
     tags: '标签',
     tagsPlaceholder: '添加标签，按回车确认',
+    tagsHint: '添加相关标签，帮助其他开发者快速了解你的需求',
+    addTag: '添加',
     submitIdea: '发布需求',
     cancel: '取消',
+    publishTips: '发布小贴士',
+    tip1: '标题要简洁明了，让人一眼就能理解你的想法',
+    tip2: '详细描述中要说明问题背景、解决方案、目标用户和技术方案',
+    tip3: '标签有助于其他开发者发现和参与你的项目',
+    tip4: '发布后，社区会从多个维度评估你的想法，请保持开放心态',
+    ideaPublishSuccess: '需求发布成功！（演示模式）',
 
     // Common
     loading: '加载中...',
@@ -159,12 +182,20 @@ export const translations = {
 
     // Ideas List
     ideasTitle: 'Ideas List',
+    ideasSubtitle: 'Discover and participate in AI innovation projects',
     ideasFilterAll: 'All',
     ideasFilterCV: 'Computer Vision',
     ideasFilterNLP: 'NLP',
     ideasFilterData: 'Data Analysis',
     ideasFilterRobotics: 'Robotics',
     ideasFilterOther: 'Other',
+    statusEvaluating: 'Evaluating',
+    statusApproved: 'Approved',
+    statusDeveloping: 'Developing',
+    statusCompleted: 'Completed',
+    publishedOn: 'Published on',
+    noIdeas: 'No Ideas Yet',
+    noIdeasDesc: 'Be the first to publish an idea!',
 
     // Idea Detail
     ideaDetail: 'Idea Details',
@@ -175,6 +206,10 @@ export const translations = {
     tabDiscussion: 'Discussion',
     tabProject: 'Project Progress',
     participateDev: 'Participate',
+    detailedDescription: 'Detailed Description',
+    projectNotStarted: 'Project Not Started',
+    projectNotStartedDesc: 'This idea is still in the evaluation phase. Once approved, you can start building a team and begin development.',
+    startDevDisabled: 'Start Development (Requires Approval)',
 
     // Evaluation
     overallScore: 'Overall Score',
@@ -217,6 +252,7 @@ export const translations = {
     // New Idea
     newIdeaTitle: 'Publish New Idea',
     newIdeaDesc: 'Share your idea and let the community evaluate and improve it together',
+    shareYourIdea: 'Share Your Idea',
     titlePlaceholder: 'Briefly describe your idea',
     title: 'Title',
     category: 'Category',
@@ -225,12 +261,22 @@ export const translations = {
     categoryData: 'Data Analysis',
     categoryRobotics: 'Robotics',
     categoryOther: 'Other',
+    selectCategory: 'Select category',
     description: 'Description',
     descriptionPlaceholder: 'Describe your idea, target users, market opportunity, etc...',
+    descriptionHint: 'Please describe: 1) Problem to solve 2) Target users 3) Technical solution 4) Market size',
     tags: 'Tags',
     tagsPlaceholder: 'Add tags and press Enter',
+    tagsHint: 'Add relevant tags to help other developers quickly understand your idea',
+    addTag: 'Add',
     submitIdea: 'Publish Idea',
     cancel: 'Cancel',
+    publishTips: 'Publishing Tips',
+    tip1: 'Keep the title clear and concise so people can understand your idea at a glance',
+    tip2: 'In the detailed description, explain the problem background, solution, target users, and technical approach',
+    tip3: 'Tags help other developers discover and participate in your project',
+    tip4: 'After publishing, the community will evaluate your idea from multiple dimensions. Please keep an open mind',
+    ideaPublishSuccess: 'Idea published successfully! (Demo mode)',
 
     // Common
     loading: 'Loading...',

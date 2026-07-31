@@ -6,8 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EvaluationForm } from '@/components/evaluation-form';
 import { CommentSection } from '@/components/comment-section';
+import { SiteHeader } from '@/components/site-header';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { useTranslation } from '@/lib/use-translation';
 
 // 模拟数据
 const mockIdea = {
@@ -110,7 +112,16 @@ const categoryColors: Record<string, string> = {
   other: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300'
 };
 
+const categoryLabels: Record<string, string> = {
+  cv: 'CV',
+  nlp: 'NLP',
+  data: 'Data',
+  robotics: 'Robotics',
+  other: 'Other'
+};
+
 export default function IdeaDetailPage() {
+  const { t } = useTranslation();
   const idea = mockIdea;
 
   const handleEvaluationSubmit = (data: any) => {
@@ -139,15 +150,17 @@ export default function IdeaDetailPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      {/* Header */}
-      <div className="border-b bg-white/50 dark:bg-black/50 backdrop-blur-sm sticky top-0 z-10">
+      <SiteHeader />
+
+      {/* Page Header */}
+      <div className="border-b bg-white/50 dark:bg-black/50 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
             <Link href="/ideas">
-              <Button variant="ghost" size="sm">← 返回列表</Button>
+              <Button variant="ghost" size="sm">← {t('navBack')}</Button>
             </Link>
             <div className="flex-1">
-              <h1 className="text-xl font-bold">需求详情</h1>
+              <h1 className="text-xl font-bold">{t('ideaDetail')}</h1>
             </div>
           </div>
         </div>
@@ -161,18 +174,18 @@ export default function IdeaDetailPage() {
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
                   <Badge className={categoryColors[idea.category]}>
-                    {idea.category.toUpperCase()}
+                    {categoryLabels[idea.category] || idea.category.toUpperCase()}
                   </Badge>
-                  <Badge variant="outline">{idea.status}</Badge>
+                  <Badge variant="outline">{t(idea.status === 'evaluating' ? 'statusEvaluating' : idea.status === 'approved' ? 'statusApproved' : idea.status === 'developing' ? 'statusDeveloping' : 'statusCompleted')}</Badge>
                 </div>
                 <h1 className="text-3xl font-bold mb-2">{idea.title}</h1>
                 <div className="flex items-center gap-4 text-sm text-slate-600">
-                  <span>创建于 {idea.created_at}</span>
-                  <span>{idea.evaluation_count} 评估</span>
+                  <span>{t('createdBy')} {idea.created_at}</span>
+                  <span>{idea.evaluation_count} {t('evaluation').toLowerCase()}</span>
                   <span>⭐ {idea.evaluation_score?.toFixed(1)}/5</span>
                 </div>
               </div>
-              <Button>参与开发</Button>
+              <Button>{t('participateDev')}</Button>
             </div>
 
             {/* Author Info */}
@@ -210,16 +223,16 @@ export default function IdeaDetailPage() {
           {/* Content */}
           <Tabs defaultValue="description" className="space-y-6">
             <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="description">需求描述</TabsTrigger>
-              <TabsTrigger value="evaluation">评估结果</TabsTrigger>
-              <TabsTrigger value="discussion">讨论区</TabsTrigger>
-              <TabsTrigger value="project">项目进展</TabsTrigger>
+              <TabsTrigger value="description">{t('tabDescription')}</TabsTrigger>
+              <TabsTrigger value="evaluation">{t('tabEvaluation')}</TabsTrigger>
+              <TabsTrigger value="discussion">{t('tabDiscussion')}</TabsTrigger>
+              <TabsTrigger value="project">{t('tabProject')}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="description">
               <Card>
                 <CardHeader>
-                  <CardTitle>详细描述</CardTitle>
+                  <CardTitle>{t('detailedDescription')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="prose dark:prose-invert max-w-none">
@@ -235,14 +248,14 @@ export default function IdeaDetailPage() {
                 {avgScores && (
                   <Card>
                     <CardHeader>
-                      <CardTitle>综合评分: {idea.evaluation_score?.toFixed(1)}/5</CardTitle>
-                      <CardDescription>基于 {idea.evaluation_count} 位社区成员的评估</CardDescription>
+                      <CardTitle>{t('overallScore')}: {idea.evaluation_score?.toFixed(1)}/5</CardTitle>
+                      <CardDescription>{t('basedOn')} {idea.evaluation_count} {t('evaluators')}</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
                         <div>
                           <div className="flex justify-between mb-1">
-                            <span>市场需求</span>
+                            <span>{t('marketDemand')}</span>
                             <span>{avgScores.market_demand.toFixed(1)}/5</span>
                           </div>
                           <div className="w-full bg-slate-200 rounded-full h-2">
@@ -254,7 +267,7 @@ export default function IdeaDetailPage() {
                         </div>
                         <div>
                           <div className="flex justify-between mb-1">
-                            <span>用户规模</span>
+                            <span>{t('userScale')}</span>
                             <span>{avgScores.user_scale.toFixed(1)}/5</span>
                           </div>
                           <div className="w-full bg-slate-200 rounded-full h-2">
@@ -266,7 +279,7 @@ export default function IdeaDetailPage() {
                         </div>
                         <div>
                           <div className="flex justify-between mb-1">
-                            <span>付费意愿</span>
+                            <span>{t('paymentWillingness')}</span>
                             <span>{avgScores.payment_willingness.toFixed(1)}/5</span>
                           </div>
                           <div className="w-full bg-slate-200 rounded-full h-2">
@@ -278,7 +291,7 @@ export default function IdeaDetailPage() {
                         </div>
                         <div>
                           <div className="flex justify-between mb-1">
-                            <span>技术可行性</span>
+                            <span>{t('techFeasibility')}</span>
                             <span>{avgScores.tech_feasibility.toFixed(1)}/5</span>
                           </div>
                           <div className="w-full bg-slate-200 rounded-full h-2">
@@ -290,7 +303,7 @@ export default function IdeaDetailPage() {
                         </div>
                         <div>
                           <div className="flex justify-between mb-1">
-                            <span>资源投入</span>
+                            <span>{t('resourceInput')}</span>
                             <span>{avgScores.resource_input.toFixed(1)}/5</span>
                           </div>
                           <div className="w-full bg-slate-200 rounded-full h-2">
@@ -327,11 +340,11 @@ export default function IdeaDetailPage() {
                 <CardContent className="pt-6">
                   <div className="text-center py-8">
                     <div className="text-6xl mb-4">🚀</div>
-                    <h3 className="text-xl font-semibold mb-2">项目尚未启动</h3>
+                    <h3 className="text-xl font-semibold mb-2">{t('projectNotStarted')}</h3>
                     <p className="text-slate-600 mb-6">
-                      这个需求还在评估阶段。一旦通过评估，就可以开始组建团队并启动开发。
+                      {t('projectNotStartedDesc')}
                     </p>
-                    <Button disabled>开始开发（需要评估通过）</Button>
+                    <Button disabled>{t('startDevDisabled')}</Button>
                   </div>
                 </CardContent>
               </Card>
