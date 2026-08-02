@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -74,6 +75,7 @@ const categoryLabels: Record<string, string> = {
 
 export default function IdeasPage() {
   const { t } = useTranslation();
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   const statusLabels: Record<string, { label: string; color: string }> = {
     evaluating: { label: t('statusEvaluating'), color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' },
@@ -81,6 +83,19 @@ export default function IdeasPage() {
     developing: { label: t('statusDeveloping'), color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' },
     completed: { label: t('statusCompleted'), color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300' }
   };
+
+  const filteredIdeas = selectedCategory === 'all'
+    ? mockIdeas
+    : mockIdeas.filter((idea) => idea.category === selectedCategory);
+
+  const categories: { key: string; label: string }[] = [
+    { key: 'all', label: t('ideasFilterAll') },
+    { key: 'cv', label: t('ideasFilterCV') },
+    { key: 'nlp', label: t('ideasFilterNLP') },
+    { key: 'data', label: t('ideasFilterData') },
+    { key: 'robotics', label: t('ideasFilterRobotics') },
+    { key: 'other', label: t('ideasFilterOther') }
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
@@ -106,17 +121,17 @@ export default function IdeasPage() {
       {/* Filters */}
       <div className="container mx-auto px-4 py-6">
         <div className="flex flex-wrap gap-2 mb-6">
-          <Button variant="outline" size="sm">{t('ideasFilterAll')}</Button>
-          <Button variant="ghost" size="sm">{t('ideasFilterCV')}</Button>
-          <Button variant="ghost" size="sm">{t('ideasFilterNLP')}</Button>
-          <Button variant="ghost" size="sm">{t('ideasFilterData')}</Button>
-          <Button variant="ghost" size="sm">{t('ideasFilterRobotics')}</Button>
-          <Button variant="ghost" size="sm">{t('ideasFilterOther')}</Button>
+          <Button variant={selectedCategory === 'all' ? 'default' : 'ghost'} size="sm" onClick={() => setSelectedCategory('all')}>{t('ideasFilterAll')}</Button>
+          <Button variant={selectedCategory === 'cv' ? 'default' : 'ghost'} size="sm" onClick={() => setSelectedCategory('cv')}>{t('ideasFilterCV')}</Button>
+          <Button variant={selectedCategory === 'nlp' ? 'default' : 'ghost'} size="sm" onClick={() => setSelectedCategory('nlp')}>{t('ideasFilterNLP')}</Button>
+          <Button variant={selectedCategory === 'data' ? 'default' : 'ghost'} size="sm" onClick={() => setSelectedCategory('data')}>{t('ideasFilterData')}</Button>
+          <Button variant={selectedCategory === 'robotics' ? 'default' : 'ghost'} size="sm" onClick={() => setSelectedCategory('robotics')}>{t('ideasFilterRobotics')}</Button>
+          <Button variant={selectedCategory === 'other' ? 'default' : 'ghost'} size="sm" onClick={() => setSelectedCategory('other')}>{t('ideasFilterOther')}</Button>
         </div>
 
         {/* Ideas Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mockIdeas.map((idea) => (
+          {filteredIdeas.map((idea) => (
             <Link key={idea.id} href={`/ideas/${idea.id}`}>
               <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
                 <CardHeader>
@@ -174,7 +189,7 @@ export default function IdeasPage() {
         </div>
 
         {/* Empty State */}
-        {mockIdeas.length === 0 && (
+        {filteredIdeas.length === 0 && (
           <div className="text-center py-16">
             <div className="text-6xl mb-4">💡</div>
             <h3 className="text-xl font-semibold mb-2">{t('noIdeas')}</h3>

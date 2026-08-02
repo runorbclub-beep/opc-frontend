@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -7,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EvaluationForm } from '@/components/evaluation-form';
 import { CommentSection } from '@/components/comment-section';
 import { SiteHeader } from '@/components/site-header';
+import { Markdown } from '@/components/markdown';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { useTranslation } from '@/lib/use-translation';
@@ -123,6 +125,7 @@ const categoryLabels: Record<string, string> = {
 export default function IdeaDetailPage() {
   const { t } = useTranslation();
   const idea = mockIdea;
+  const [participated, setParticipated] = useState(false);
 
   const handleEvaluationSubmit = (data: any) => {
     console.log('评估已提交:', data);
@@ -185,7 +188,13 @@ export default function IdeaDetailPage() {
                   <span>⭐ {idea.evaluation_score?.toFixed(1)}/5</span>
                 </div>
               </div>
-              <Button>{t('participateDev')}</Button>
+              <Button
+                onClick={() => setParticipated(true)}
+                disabled={participated}
+                variant={participated ? 'outline' : 'default'}
+              >
+                {participated ? `✓ ${t('participateDev')}` : t('participateDev')}
+              </Button>
             </div>
 
             {/* Author Info */}
@@ -236,7 +245,7 @@ export default function IdeaDetailPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="prose dark:prose-invert max-w-none">
-                    <p style={{ whiteSpace: 'pre-line' }}>{idea.description}</p>
+                    <Markdown content={idea.description} />
                   </div>
                 </CardContent>
               </Card>
