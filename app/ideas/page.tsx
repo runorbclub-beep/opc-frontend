@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { SiteHeader } from '@/components/site-header';
 import Link from 'next/link';
 import { useTranslation } from '@/lib/use-translation';
+import { getUserIdeas, type UserIdea } from '@/lib/idea-store';
 
 // 模拟数据（后续会从API获取）
 const mockIdeas = [
@@ -76,6 +77,14 @@ const categoryLabels: Record<string, string> = {
 export default function IdeasPage() {
   const { t } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [userIdeas, setUserIdeas] = useState<UserIdea[]>([]);
+
+  useEffect(() => {
+    setUserIdeas(getUserIdeas());
+  }, []);
+
+  // Merge user-submitted ideas with mock ideas (user ideas first)
+  const allIdeas = [...userIdeas, ...mockIdeas];
 
   const statusLabels: Record<string, { label: string; color: string }> = {
     evaluating: { label: t('statusEvaluating'), color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' },
@@ -85,8 +94,8 @@ export default function IdeasPage() {
   };
 
   const filteredIdeas = selectedCategory === 'all'
-    ? mockIdeas
-    : mockIdeas.filter((idea) => idea.category === selectedCategory);
+    ? allIdeas
+    : allIdeas.filter((idea) => idea.category === selectedCategory);
 
   const categories: { key: string; label: string }[] = [
     { key: 'all', label: t('ideasFilterAll') },
@@ -131,8 +140,12 @@ export default function IdeasPage() {
 
         {/* Ideas Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredIdeas.map((idea) => (
-            <Link key={idea.id} href={`/ideas/${idea.id}`}>
+          {filteredIdeas.map((idea) => {
+            const detailHref = idea.id.startsWith('user-')
+              ? `/ideas/detail?id=${idea.id}`
+              : `/ideas/${idea.id}`;
+            return (
+            <Link key={idea.id} href={detailHref}>
               <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
                 <CardHeader>
                   <div className="flex items-start justify-between gap-2 mb-2">
@@ -154,7 +167,7 @@ export default function IdeasPage() {
                 </CardHeader>
                 <CardContent>
                   <CardDescription className="mb-4 line-clamp-3">
-                    {idea.description}
+                    {idea.description.replace(/[#*`]/g, '').replace(/\n+/g, ' ').slice(0, 120)}
                   </CardDescription>
 
                   <div className="flex flex-wrap gap-1 mb-3">
@@ -185,7 +198,8 @@ export default function IdeasPage() {
                 </CardContent>
               </Card>
             </Link>
-          ))}
+            );
+          })}
         </div>
 
         {/* Empty State */}

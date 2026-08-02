@@ -135,7 +135,7 @@ export const translations = {
     tip2: '详细描述中要说明问题背景、解决方案、目标用户和技术方案',
     tip3: '标签有助于其他开发者发现和参与你的项目',
     tip4: '发布后，社区会从多个维度评估你的想法，请保持开放心态',
-    ideaPublishSuccess: '需求发布成功！（演示模式）',
+    ideaPublishSuccess: '需求发布成功！',
 
     // Common
     loading: '加载中...',
@@ -276,7 +276,7 @@ export const translations = {
     tip2: 'In the detailed description, explain the problem background, solution, target users, and technical approach',
     tip3: 'Tags help other developers discover and participate in your project',
     tip4: 'After publishing, the community will evaluate your idea from multiple dimensions. Please keep an open mind',
-    ideaPublishSuccess: 'Idea published successfully! (Demo mode)',
+    ideaPublishSuccess: 'Idea published successfully!',
 
     // Common
     loading: 'Loading...',

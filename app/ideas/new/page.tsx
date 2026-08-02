@@ -19,6 +19,7 @@ import { SiteHeader } from '@/components/site-header';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/lib/use-translation';
+import { saveUserIdea } from '@/lib/idea-store';
 
 export default function NewIdeaPage() {
   const router = useRouter();
@@ -44,27 +45,22 @@ export default function NewIdeaPage() {
 
     const formData = new FormData(e.currentTarget);
     const ideaData = {
-      title: formData.get('title'),
-      description: formData.get('description'),
-      category: formData.get('category'),
+      title: formData.get('title') as string,
+      description: formData.get('description') as string,
+      category: formData.get('category') as string,
       tags: tags,
     };
 
-    console.log('提交需求:', ideaData);
-
-    // TODO: 调用API提交需求
-    // const response = await fetch('/api/ideas', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(ideaData),
-    // });
-
-    // 模拟提交
-    setTimeout(() => {
+    try {
+      saveUserIdea(ideaData);
+      // Redirect to ideas list (use location.href for static export compatibility)
+      setTimeout(() => {
+        window.location.href = '/ideas';
+      }, 500);
+    } catch (err) {
       setIsSubmitting(false);
-      alert(t('ideaPublishSuccess'));
-      router.push('/ideas');
-    }, 1000);
+      console.error('保存失败:', err);
+    }
   };
 
   return (
