@@ -1,0 +1,10 @@
+name = "opc-frontend"
+compatibility_date = "2026-07-27"
+pages_build_output_dir = "out"
+
+[[kv_namespaces]]
+binding = "OPC_VOTES"
+id = "253d5c1418104d91861b63cf60a70625"
+
+[vars]
+VOTE_TARGET = "100"

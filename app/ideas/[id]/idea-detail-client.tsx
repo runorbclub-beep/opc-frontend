@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,7 @@ import { EvaluationForm } from '@/components/evaluation-form';
 import { CommentSection } from '@/components/comment-section';
 import { SiteHeader } from '@/components/site-header';
 import { Markdown } from '@/components/markdown';
+import VoteButton from '@/components/vote-button';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { useTranslation } from '@/lib/use-translation';
@@ -122,6 +123,90 @@ const categoryLabels: Record<string, string> = {
   other: 'Other'
 };
 
+/** AI 初步方案展示区：轮询 /api/vote 获取生成结果 */
+function AIPlanSection({ ideaId }: { ideaId: string }) {
+  const { t } = useTranslation();
+  const [gen, setGen] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function poll() {
+      try {
+        const res = await fetch(`/api/vote?ideaId=${encodeURIComponent(ideaId)}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (cancelled) return;
+        setGen(data.generated || null);
+        // 生成中则继续轮询
+        if (data.generated?.status === 'generating' || (!data.generated && data.launched)) {
+          setTimeout(poll, 5000);
+        } else {
+          setLoading(false);
+        }
+      } catch {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    poll();
+    return () => {
+      cancelled = true;
+    };
+  }, [ideaId, t]);
+
+  if (loading && !gen) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-4xl mb-4 animate-pulse">🤖</div>
+        <p className="text-slate-500">{t('loading')}</p>
+      </div>
+    );
+  }
+
+  if (!gen) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-4xl mb-4">💡</div>
+        <h3 className="text-lg font-semibold mb-2">{t('aiPlanEmpty')}</h3>
+        <p className="text-slate-500">{t('aiPlanEmptyDesc')}</p>
+      </div>
+    );
+  }
+
+  if (gen.status === 'generating') {
+    return (
+      <div className="text-center py-12">
+        <div className="text-4xl mb-4 animate-pulse">⏳</div>
+        <p className="text-slate-600">{t('aiPlanGenerating')}</p>
+      </div>
+    );
+  }
+
+  if (gen.status === 'error') {
+    return (
+      <div className="text-center py-12">
+        <div className="text-4xl mb-4">⚠️</div>
+        <p className="text-red-600">{t('aiPlanError')}{gen.error || ''}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="prose dark:prose-invert max-w-none">
+      <div className="mb-4 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 text-sm text-green-700 dark:text-green-300">
+        ✅ {t('aiPlanDone')}
+      </div>
+      <div style={{ whiteSpace: 'pre-wrap' }} className="text-sm leading-relaxed">
+        <Markdown content={gen.content} />
+      </div>
+    </div>
+  );
+}
+
 export default function IdeaDetailPage() {
   const { t } = useTranslation();
   const idea = mockIdea;
@@ -188,13 +273,22 @@ export default function IdeaDetailPage() {
                   <span>⭐ {idea.evaluation_score?.toFixed(1)}/5</span>
                 </div>
               </div>
-              <Button
-                onClick={() => setParticipated(true)}
-                disabled={participated}
-                variant={participated ? 'outline' : 'default'}
-              >
-                {participated ? `✓ ${t('participateDev')}` : t('participateDev')}
-              </Button>
+              <div className="flex flex-col gap-3">
+                <div className="w-72 shrink-0">
+                  <VoteButton
+                    ideaId={idea.id}
+                    ideaTitle={idea.title}
+                    ideaDesc={idea.description}
+                  />
+                </div>
+                <Button
+                  onClick={() => setParticipated(true)}
+                  disabled={participated}
+                  variant={participated ? 'outline' : 'default'}
+                >
+                  {participated ? `✓ ${t('participateDev')}` : t('participateDev')}
+                </Button>
+              </div>
             </div>
 
             {/* Author Info */}
@@ -231,8 +325,9 @@ export default function IdeaDetailPage() {
 
           {/* Content */}
           <Tabs defaultValue="description" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="description">{t('tabDescription')}</TabsTrigger>
+              <TabsTrigger value="aiplan">{t('tabAIPlan')}</TabsTrigger>
               <TabsTrigger value="evaluation">{t('tabEvaluation')}</TabsTrigger>
               <TabsTrigger value="discussion">{t('tabDiscussion')}</TabsTrigger>
               <TabsTrigger value="project">{t('tabProject')}</TabsTrigger>
@@ -247,6 +342,18 @@ export default function IdeaDetailPage() {
                   <div className="prose dark:prose-invert max-w-none">
                     <Markdown content={idea.description} />
                   </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="aiplan">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('tabAIPlan')}</CardTitle>
+                  <CardDescription>{t('aiPlanEmptyDesc')}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <AIPlanSection ideaId={idea.id} />
                 </CardContent>
               </Card>
             </TabsContent>

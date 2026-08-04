@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { SiteHeader } from '@/components/site-header';
+import VoteButton from '@/components/vote-button';
 import Link from 'next/link';
 import { useTranslation } from '@/lib/use-translation';
 import { getUserIdeas, type UserIdea } from '@/lib/idea-store';
@@ -192,8 +193,16 @@ export default function IdeasPage() {
                     </Badge>
                   </div>
 
-                  <div className="mt-3 pt-3 border-t text-xs text-slate-500">
-                    {t('publishedOn')} {idea.created_at}
+                  <div className="mt-3 pt-3 border-t flex items-center justify-between">
+                    <VoteButton
+                      ideaId={idea.id}
+                      ideaTitle={idea.title}
+                      ideaDesc={idea.description}
+                      compact
+                    />
+                    <span className="text-xs text-slate-500">
+                      {t('publishedOn')} {idea.created_at}
+                    </span>
                   </div>
                 </CardContent>
               </Card>
