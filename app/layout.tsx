@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "OPC 一人公司 - Open Problem & Collaboration",
-  description: "OPC 单人创业启动清单与协同开发平台：从想法到产品的完整闭环，市场验证 + 技术协作 + 众筹支持。",
-  keywords: ["OPC", "一人公司", "Vibecoding", "AI创业", "单人创业"],
+  title: "OPC — Open Projects & Collaboration",
+  description: "AI-Powered Innovation & Collaboration Platform. From idea to product: Market Validation + Tech Collaboration + Crowdfunding.",
+  keywords: ["OPC", "Open Projects", "Collaboration", "Vibecoding", "AI Startup", "Solo Founder"],
 };
 
 export default function RootLayout({

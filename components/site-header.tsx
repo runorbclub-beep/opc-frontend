@@ -39,11 +39,11 @@ export function SiteHeader() {
               </Link>
               <Link href="/demo">
                 <Button variant="outline" size="sm">
-                  语音演示
+                  {t('navDemo')}
                 </Button>
               </Link>
               <Button size="sm" onClick={handleLoginClick}>
-                登录
+                {t('navLogin')}
               </Button>
               <LanguageSwitcher />
             </nav>

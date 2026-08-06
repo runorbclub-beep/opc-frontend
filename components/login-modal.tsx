@@ -27,7 +27,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     triggerVersionCheck();
 
     if (!email || !password) {
-      setError('请填写所有字段');
+      setError(t('fillAllFields'));
       return;
     }
 
@@ -71,12 +71,12 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="登录"
-      description="登录后可以发布需求、参与评估和讨论"
+      title={t('loginTitle')}
+      description={t('loginDesc')}
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <Label htmlFor="email">邮箱</Label>
+          <Label htmlFor="email">{t('email')}</Label>
           <Input
             id="email"
             type="email"
@@ -88,7 +88,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
         </div>
 
         <div>
-          <Label htmlFor="password">密码</Label>
+          <Label htmlFor="password">{t('password')}</Label>
           <Input
             id="password"
             type="password"
@@ -107,7 +107,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
         <div className="flex flex-col gap-2">
           <Button type="submit" disabled={isLoading} className="w-full">
-            {isLoading ? '登录中...' : '登录'}
+            {isLoading ? t('loggingIn') : t('loginBtn')}
           </Button>
 
           <Button
@@ -117,18 +117,18 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
             disabled={isLoading}
             className="w-full"
           >
-            访客模式
+            {t('guestMode')}
           </Button>
         </div>
 
         <div className="text-center text-sm text-slate-600">
-          还没有账号？{' '}
+          {t('noAccount')}{' '}
           <button
             type="button"
             className="text-blue-600 hover:underline"
-            onClick={() => alert('注册功能开发中')}
+            onClick={() => alert(t('signupWip'))}
           >
-            立即注册
+            {t('signupNow')}
           </button>
         </div>
       </form>
